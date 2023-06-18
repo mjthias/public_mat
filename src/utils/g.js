@@ -1,5 +1,5 @@
 // VARS
-export const API_BASE_URL = import.meta.env.PUBLIC_ENV == 'dev' ? "http://127.0.0.1:5555" : "http://anarkist.eu.pythonanywhere.com";
+export const API_BASE_URL = import.meta.env.PUBLIC_ENV == 'dev' ? "http://127.0.0.1:5555" : "http://twibber.eu.pythonanywhere.com";
 export const SUPPORTED_LANGS = ["da", "en"]
 export const MAIN_LANG = "da"
 export const LANG_STRINGS = {

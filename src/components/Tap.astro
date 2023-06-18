@@ -1,0 +1,95 @@
+---
+import {Picture} from '@astrojs/image/components';
+import { API_BASE_URL } from "../utils/g";
+const { tap, lang, strs } = Astro.props
+
+const {
+    tap_id,
+    tap_number,
+    beer_name,
+    beer_alc,
+    beer_ibu,
+    beer_ebc,
+    beer_price,
+    beer_image,
+    beer_description_en,
+    beer_description_dk,
+    beer_style_name, 
+    brewery_menu_name,
+    } = tap
+
+    const beerImage = beer_image == "" ? "placeholder.jpg" : beer_image;
+    const beerDescription = lang == "da" ? beer_description_dk : beer_description_en;
+    const beerAlc = formatAlc(beer_alc);
+    
+    function formatAlc(alc) {
+        const decimals = alc.substring(alc.indexOf("."));
+        if (decimals == ".00" || decimals.substring(2) == "0") {
+            alc = parseFloat(alc).toFixed(1);
+        }
+        return alc;
+    }
+---
+
+<article class="grid grid-cols-3 gap-4 gap-y-0 self-start">
+    <div class="hidden sm:block col-span-full mb-2">
+        <h3 class="text-xl">
+            {tap_number ? `${tap_number}. ${beer_name}` : beer_name}
+        </h3>
+    </div>
+    <div class="col-span-1 sm:col-span-full">
+        <Picture 
+            class="rounded sm:mb-2" 
+            src={beerImage ? `${API_BASE_URL}/static/images/${beerImage}` : "/placeholder.jpg"} 
+            widths={[100, 200, 300, 600]} 
+            sizes="(max-width: 640) 100px, 300px" 
+            width={600}
+            height={600}
+            aspectRatio="1:1" 
+            alt={`${brewery_menu_name} ${beer_name}`}
+        />
+    </div>
+    <div class="col-span-2 sm:col-span-full gap-2 md:gap-1 flex flex-col justify-between">
+        <div class="flex flex-col">
+            <h3 class="text-xl sm:hidden">
+                {tap_number ? `${tap_number}. ${beer_name}` : beer_name}
+            </h3>
+            <p class="sm:order-2">
+                {beer_style_name}
+                <span class="mx-2 sm:hidden">|</span>
+                <span class="sm:block">{brewery_menu_name}</span>
+            </p>
+            <p class="text-xs md:text-sm sm:order-1 sm:flex sm:justify-between sm:mb-2 text-secondary">
+                ALC.: {beerAlc}%
+                <span class="mx-2">|</span>
+                IBU: {beer_ibu ? beer_ibu : "-"}
+                <span class="mx-2">|</span>
+                EBC: {beer_ebc ? beer_ibu : "-"}
+            </p>
+        </div>
+        <div class={beerDescription ? "flex justify-between" : "flex justify-end"}>
+            {beerDescription && 
+                <button
+                    onclick="toggleReadMoreAccordion()" 
+                    data-target={`desc_${tap_id}`} 
+                    class="text-sm self-end underline cursor-pointer"
+                >
+                    {strs.readMore}
+                </button>
+            }
+            <p class="text-right">{beer_price} DKK</p>
+        </div>
+    </div>
+    <!-- max-h-104 -->
+    {beerDescription &&
+        <div 
+            data-accordion={`desc_${tap_id}`} 
+            class="col-span-full max-h-0 overflow-hidden transition-all"
+        >
+            <p class="pt-4">
+                {beerDescription}
+            </p>
+            
+        </div>
+    }
+</article>

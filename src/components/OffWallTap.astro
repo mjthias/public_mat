@@ -1,0 +1,8 @@
+---
+const { tap } = Astro.props
+---
+
+<article class="flex justify-between md:text-lg lg:text-xl">
+    <p>{tap.beer_name}</p>
+    <p class="self-end">{tap.beer_price} DKK</p>
+</article>
